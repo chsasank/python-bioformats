@@ -11,7 +11,8 @@
 
 import xml.etree.ElementTree
 from xml.etree import cElementTree as ElementTree
-from cStringIO import StringIO
+from io import StringIO
+from functools import reduce
 import datetime
 import logging
 logger = logging.getLogger(__file__)
@@ -304,8 +305,13 @@ class OMEXML(object):
     def __init__(self, xml=None):
         if xml is None:
             xml = default_xml
-        if isinstance(xml, unicode):
-            xml = xml.encode("utf-8")
+        try:
+            if isinstance(xml, basestring):
+                xml = xml.encode("utf-8")
+        except NameError: #since basestring not defined in python3 and is same as str
+            if isinstance(xml, str):
+                xml = xml.encode("utf-8")
+
         self.dom = ElementTree.ElementTree(ElementTree.fromstring(xml))
 
         # determine OME namespaces
@@ -733,8 +739,7 @@ class OMEXML(object):
             raise IndexError('ID "%s" not found' % key)
         
         def keys(self):
-            return filter(lambda x: x is not None,
-                          [child.get("ID") for child in self.node])
+            return [x for x in [child.get("ID") for child in self.node] if x is not None]
         
         def has_key(self, key):
             for child in self.node:
