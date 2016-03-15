@@ -10,7 +10,7 @@
 '''
 
 try:
-    from _version import __version__
+    from ._version import __version__
 except ImportError:
     # We're running in a tree that doesn't have a _version.py, so we don't know what our version is.
     __version__ = "0.0.0"
@@ -51,7 +51,7 @@ ChannelSeparator = _formatreader.make_reader_wrapper_class(
 
 from .metadatatools import createOMEXMLMetadata as create_ome_xml_metadata
 from .metadatatools import wrap_imetadata_object
-import metadatatools as _metadatatools
+from . import metadatatools as _metadatatools
 PixelType = _metadatatools.make_pixel_type_class()
 get_metadata_options = _metadatatools.get_metadata_options
 
