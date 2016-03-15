@@ -4,3 +4,4 @@
 /python_bioformats.egg-info
 /dist
 /bioformats/_version.py
+*.bak

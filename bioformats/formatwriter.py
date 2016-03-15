@@ -32,6 +32,8 @@ file.
 
 __version__ = "$Revision$"
 
+
+
 import numpy as np
 import os
 import sys
@@ -424,8 +426,8 @@ if __name__ == "__main__":
     import wx
     import matplotlib.backends.backend_wxagg as mmmm
     import bioformats
-    from formatreader import *
-    from metadatatools import *
+    from .formatreader import *
+    from .metadatatools import *
     
     app = wx.PySimpleApp()
 
@@ -442,9 +444,9 @@ if __name__ == "__main__":
     out_file = '/Users/afraser/Desktop/test_output.avi'
     try:
         os.remove(out_file)
-        print 'previous output file deleted'
+        print('previous output file deleted')
     except:
-        print 'no output file to delete'
+        print('no output file to delete')
     
     env = jutil.attach()
     ImageReader = make_image_reader_class()
@@ -477,15 +479,15 @@ if __name__ == "__main__":
     meta.setPixelsSizeT(t, 0, 0)
     meta.setLogicalChannelSamplesPerPixel(c, 0, 0)
     
-    print 'big endian:', meta.getPixelsBigEndian(0, 0)
-    print 'dim order:', meta.getPixelsDimensionOrder(0, 0)
-    print 'pixel type:', meta.getPixelsPixelType(0, 0)
-    print 'size x:', meta.getPixelsSizeX(0, 0)
-    print 'size y:', meta.getPixelsSizeY(0, 0)
-    print 'size c:', meta.getPixelsSizeC(0, 0)
-    print 'size z:', meta.getPixelsSizeZ(0, 0)
-    print 'size t:', meta.getPixelsSizeT(0, 0)
-    print 'samples per pixel:', meta.getLogicalChannelSamplesPerPixel(0, 0)
+    print('big endian:', meta.getPixelsBigEndian(0, 0))
+    print('dim order:', meta.getPixelsDimensionOrder(0, 0))
+    print('pixel type:', meta.getPixelsPixelType(0, 0))
+    print('size x:', meta.getPixelsSizeX(0, 0))
+    print('size y:', meta.getPixelsSizeY(0, 0))
+    print('size c:', meta.getPixelsSizeC(0, 0))
+    print('size z:', meta.getPixelsSizeZ(0, 0))
+    print('size t:', meta.getPixelsSizeT(0, 0))
+    print('samples per pixel:', meta.getLogicalChannelSamplesPerPixel(0, 0))
 
     writer.setMetadataRetrieve(meta)
     writer.setId(out_file)
@@ -497,7 +499,7 @@ if __name__ == "__main__":
         writer.saveBytes(env.make_byte_array(save_im), (image is images[-1]))
     writer.close()
     
-    print 'Done writing image :)'
+    print('Done writing image :)')
 #    import PIL.Image as Image
 #    im = Image.open(out_file, 'r')
 #    im.show()
