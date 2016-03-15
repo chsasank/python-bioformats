@@ -21,7 +21,8 @@ Example:
         [cs.open_bytes(cs.getIndex(0,i,0)) for i in range(3)]
 
 '''
-    
+from future.standard_library import hooks
+
 __version__ = "$Revision$"
 
 import logging
@@ -30,10 +31,12 @@ import errno
 import numpy as np
 import os
 import sys
-import urllib.request, urllib.parse, urllib.error
 import shutil
 import tempfile
 import traceback
+
+with hooks():
+    import urllib.request, urllib.parse, urllib.error
 
 import javabridge as jutil
 import bioformats

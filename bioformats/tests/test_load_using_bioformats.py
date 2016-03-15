@@ -4,6 +4,7 @@
 # 
 # Copyright (c) 2009-2014 Broad Institute
 # All rights reserved.
+from future.standard_library import hooks
 
 import exceptions
 import os
@@ -15,7 +16,9 @@ import bioformats
 import bioformats.formatreader as formatreader
 import bioformats.metadatatools as metadatatools
 from bioformats import load_image, load_image_url
-import urllib.request, urllib.parse, urllib.error
+
+with hooks():
+    import urllib.request, urllib.parse, urllib.error
 
 class TestLoadUsingBioformats(unittest.TestCase):
 
