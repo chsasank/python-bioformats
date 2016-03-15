@@ -31,6 +31,16 @@ import numpy as np
 import os
 import sys
 import urllib.request, urllib.parse, urllib.error
+
+try:
+    import urllib.request as urllib_request #for python 3
+    import urllib.request as urllib_request2 #for python 3
+    import urllib.parse as urllib_parse
+except ImportError:
+    import urllib as urllib_request # for python 2
+    import urllib2 as urllib_request2 # for python 2
+    import urllib2 as urllib_parse # for python 2
+
 import shutil
 import tempfile
 import traceback
@@ -543,7 +553,7 @@ class ImageReader(object):
         self.url = url
         self.using_temp_file = False
         if url is not None and url.lower().startswith(file_scheme):
-            utf8_url = urllib.request.url2pathname(url[len(file_scheme):])
+            utf8_url = urllib_request.url2pathname(url[len(file_scheme):])
             if isinstance(utf8_url, str):
                 try:
                     path = unicode(utf8_url, 'utf-8')
@@ -593,7 +603,7 @@ class ImageReader(object):
                 # Other URLS, copy them to a tempfile location
                 #
                 ext = url[url.rfind("."):]
-                src = urllib.request.urlopen(url)
+                src = urllib_request2.urlopen(url)
                 dest_fd, self.path = tempfile.mkstemp(suffix=ext)
                 try:
                     dest = os.fdopen(dest_fd, 'wb')
