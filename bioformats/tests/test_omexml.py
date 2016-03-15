@@ -12,8 +12,6 @@
 import datetime
 import os
 import unittest
-import urllib.request, urllib.parse, urllib.error
-import xml.dom
 
 import bioformats.omexml as O
 
