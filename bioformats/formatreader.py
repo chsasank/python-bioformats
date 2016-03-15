@@ -31,7 +31,6 @@ import numpy as np
 import os
 import sys
 import urllib.request, urllib.parse, urllib.error
-import urllib.request, urllib.error, urllib.parse
 import shutil
 import tempfile
 import traceback

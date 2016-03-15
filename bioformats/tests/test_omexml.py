@@ -12,7 +12,7 @@
 import datetime
 import os
 import unittest
-import urllib
+import urllib.request, urllib.parse, urllib.error
 import xml.dom
 
 import bioformats.omexml as O
@@ -29,8 +29,8 @@ class TestOMEXML(unittest.TestCase):
         
     def test_00_00_init(self):
         o = O.OMEXML()
-        self.assertEquals(o.root_node.tag, O.qn(o.get_ns("ome"), "OME"))
-        self.assertEquals(o.image_count, 1)
+        self.assertEqual(o.root_node.tag, O.qn(o.get_ns("ome"), "OME"))
+        self.assertEqual(o.image_count, 1)
         
     def test_01_01_read(self):
         for xml in (self.GROUPFILES_XML, TIFF_XML):
@@ -71,7 +71,7 @@ class TestOMEXML(unittest.TestCase):
         
     def test_03_03_image(self):
         o = O.OMEXML(self.GROUPFILES_XML)
-        self.assertEquals(o.image_count, 576)
+        self.assertEqual(o.image_count, 576)
         for i in range(576):
             im = o.image(i)
             self.assertEqual(im.node.get("ID"), "Image:%d" % i)
@@ -83,21 +83,21 @@ class TestOMEXML(unittest.TestCase):
         
     def test_04_01_image_get_id(self):
         o =  O.OMEXML(TIFF_XML)
-        self.assertEquals(o.image(0).ID, "Image:0")
+        self.assertEqual(o.image(0).ID, "Image:0")
         
     def test_04_02_image_set_id(self):
         o = O.OMEXML(TIFF_XML)
         o.image(0).ID = "Foo"
-        self.assertEquals(o.image(0).node.get("ID"), "Foo")
+        self.assertEqual(o.image(0).node.get("ID"), "Foo")
         
     def test_04_03_image_get_name(self):
         o = O.OMEXML(TIFF_XML)
-        self.assertEquals(o.image(0).Name, "Channel1-01-A-01.tif")
+        self.assertEqual(o.image(0).Name, "Channel1-01-A-01.tif")
         
     def test_04_04_image_set_name(self):
         o = O.OMEXML(TIFF_XML)
         o.image(0).Name = "Foo"
-        self.assertEquals(o.image(0).node.get("Name"), "Foo")
+        self.assertEqual(o.image(0).node.get("Name"), "Foo")
         
     def test_04_05_image_get_acquisition_date(self):
         o = O.OMEXML(TIFF_XML)
@@ -244,15 +244,15 @@ class TestOMEXML(unittest.TestCase):
         self.assertEqual(O.get_text(values[0]), "72")
         
     def test_07_02_01_sa_keys(self):
-        keys = O.OMEXML(TIFF_XML).structured_annotations.keys()
+        keys = list(O.OMEXML(TIFF_XML).structured_annotations.keys())
         for i in range(21):
             self.assertTrue("Annotation:%d" %i in keys)
         
     def test_07_02_02_sa_has_key(self):
         o = O.OMEXML(TIFF_XML)
         for i in range(20):
-            self.assertTrue(o.structured_annotations.has_key("Annotation:%d" %i))
-        self.assertFalse(o.structured_annotations.has_key("Foo"))
+            self.assertTrue("Annotation:%d" %i in o.structured_annotations)
+        self.assertFalse("Foo" in o.structured_annotations)
             
     def test_07_03_om_getitem(self):
         o = O.OMEXML(TIFF_XML)
@@ -260,7 +260,7 @@ class TestOMEXML(unittest.TestCase):
 
     def test_07_04_01_om_keys(self):
         o = O.OMEXML(TIFF_XML)
-        keys = o.structured_annotations.OriginalMetadata.keys()
+        keys = list(o.structured_annotations.OriginalMetadata.keys())
         self.assertEqual(len(keys), 21)
         for k in ("DateTime", "Software", "YResolution"):
             self.assertTrue(k in keys)
@@ -269,8 +269,8 @@ class TestOMEXML(unittest.TestCase):
         o = O.OMEXML(TIFF_XML)
         om = o.structured_annotations.OriginalMetadata
         for k in ("DateTime", "Software", "YResolution"):
-            self.assertTrue(om.has_key(k))
-        self.assertFalse(om.has_key("Foo"))
+            self.assertTrue(k in om)
+        self.assertFalse("Foo" in om)
         
     def test_07_05_om_setitem(self):
         o = O.OMEXML()
