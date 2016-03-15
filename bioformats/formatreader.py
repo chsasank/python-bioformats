@@ -31,8 +31,8 @@ import exceptions
 import numpy as np
 import os
 import sys
-import urllib
-import urllib2
+import urllib.request, urllib.parse, urllib.error
+import urllib.request, urllib.error, urllib.parse
 import shutil
 import tempfile
 import traceback
@@ -439,7 +439,7 @@ def omero_login():
         env = jutil.get_env()
         config = env.make_object_array(1, env.find_class("java/lang/String"))
         env.set_object_array_element(
-            config, 0, env.new_string(u"--Ice.Config=%s" % __omero_config_file))
+            config, 0, env.new_string("--Ice.Config=%s" % __omero_config_file))
         script = """
         var client = Packages.omero.client(config);
         client.createSession();
@@ -447,7 +447,7 @@ def omero_login():
         """
         __omero_session_id = jutil.run_script(script, dict(config=config))
     elif all([x is not None for x in 
-              __omero_server, __omero_port, __omero_username, __omero_password]):
+              (__omero_server, __omero_port, __omero_username, __omero_password)]):
         set_omero_credentials(__omero_server, __omero_port, __omero_username, 
                               __omero_password)
     else:
@@ -545,9 +545,12 @@ class ImageReader(object):
         self.url = url
         self.using_temp_file = False
         if url is not None and url.lower().startswith(file_scheme):
-            utf8_url = urllib.url2pathname(url[len(file_scheme):])
+            utf8_url = urllib.request.url2pathname(url[len(file_scheme):])
             if isinstance(utf8_url, str):
-                path = unicode(utf8_url, 'utf-8')
+                try:
+                    path = unicode(utf8_url, 'utf-8')
+                except NameError: #because python3 has no unicode function
+                    path = utf8_url #unicode supported by default in python3
             else:
                 path = utf8_url
         self.path = path
@@ -564,7 +567,7 @@ class ImageReader(object):
                         if perform_init:
                             self.init_reader()
                         return
-                    except jutil.JavaException, e:
+                    except jutil.JavaException as e:
                         je = e.throwable
                         if jutil.is_instance_of(
                             je, "loci/formats/FormatException"):
@@ -592,7 +595,7 @@ class ImageReader(object):
                 # Other URLS, copy them to a tempfile location
                 #
                 ext = url[url.rfind("."):]
-                src = urllib2.urlopen(url)
+                src = urllib.request.urlopen(url)
                 dest_fd, self.path = tempfile.mkstemp(suffix=ext)
                 try:
                     dest = os.fdopen(dest_fd, 'wb')
@@ -605,7 +608,7 @@ class ImageReader(object):
                 src.close()
                 dest.close()
                 urlpath = urllib2.urlparse.urlparse(url)[2]
-                filename = urllib2.unquote(urlpath.split("/")[-1])
+                filename = urllib.parse.unquote(urlpath.split("/")[-1])
         else:
             if sys.platform.startswith("win"):
                 self.path = self.path.replace("/", os.path.sep)
@@ -699,7 +702,7 @@ class ImageReader(object):
         self.rdr.setMetadataStore(self.metadata)
         try:
             self.rdr.setId(self.path)
-        except jutil.JavaException, e:
+        except jutil.JavaException as e:
             logger.warn(e.message)
             for line in traceback.format_exc().split("\n"):
                 logger.warn(line)
