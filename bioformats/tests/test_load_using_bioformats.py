@@ -15,7 +15,7 @@ import bioformats
 import bioformats.formatreader as formatreader
 import bioformats.metadatatools as metadatatools
 from bioformats import load_image, load_image_url
-import urllib
+import urllib.request, urllib.parse, urllib.error
 
 class TestLoadUsingBioformats(unittest.TestCase):
 
@@ -30,7 +30,7 @@ class TestLoadUsingBioformats(unittest.TestCase):
         path = os.path.join(os.path.dirname(__file__), 'Channel1-01-A-01.tif')
         image, scale = load_image(path, rescale=False,
                                   wants_max_intensity=True)
-        print image.shape
+        print(image.shape)
         
     def test_file_not_found(self):
         # Regression test of issue #6
@@ -48,7 +48,7 @@ class TestLoadUsingBioformatsURL(unittest.TestCase):
 
     def test_01_01_open_file(self):
         path = os.path.join(os.path.dirname(__file__), 'Channel1-01-A-01.tif')
-        url = "file:" + urllib.pathname2url(path).encode("utf-8")
+        url = "file:" + urllib.request.pathname2url(path).encode("utf-8")
         image, scale = load_image_url(
             url, rescale=False, wants_max_intensity=True)
         self.assertEqual(image.shape[0], 640)
@@ -66,7 +66,7 @@ class TestLoadUsingBioformatsURL(unittest.TestCase):
         # raise an exception when converting URL to string
         #
         path = os.path.join(os.path.dirname(__file__), 'Channel1-01-A-01.tif')
-        url = u"file:" + urllib.pathname2url(path).encode("utf-8")
+        url = "file:" + urllib.request.pathname2url(path).encode("utf-8")
         image, scale = load_image_url(
             url, rescale=False, wants_max_intensity=True)
         self.assertEqual(image.shape[0], 640)
