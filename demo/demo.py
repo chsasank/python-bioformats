@@ -24,6 +24,6 @@ try:
         pylab.gca().set_title(image_path)
         pylab.show()
     except:
-        print image.shape
+        print(image.shape)
 finally:
     javabridge.kill_vm()
