@@ -8,11 +8,11 @@
 ''' metadatatools.py - mechanism to wrap some bioformats metadata classes
 
 '''
+from __future__ import print_function, division, absolute_import
 
 __version__ = "$Revision$"
 
 from javabridge import jutil
-import bioformats
 
 def createOMEXMLMetadata():
     '''Creates an OME-XML metadata object using reflection, to avoid direct 
